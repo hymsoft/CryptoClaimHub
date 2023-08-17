@@ -29,6 +29,7 @@ const data = [
 ];
 
 const faucetList = document.getElementById('faucetList');
+const timers = {}; // Para mantener un seguimiento de los temporizadores activos
 
 data.forEach(faucet => {
     const row = document.createElement('tr');
@@ -47,6 +48,34 @@ data.forEach(faucet => {
     faucetList.appendChild(row);
 });
 
-function resetClaim(faucetId, timeToClaim) { }
+function resetClaim(faucetId, timeToClaim) {
+    const countdownElement = document.getElementById(`countdown${faucetId}`);
+    const claimButton = document.querySelector(`button[data-id="${faucetId}"][data-button="claim"]`);
+
+    // Detener el temporizador existente si existe uno
+    if (timers[faucetId]) {
+        clearInterval(timers[faucetId]);
+    }
+
+    claimButton.disabled = true;
+
+    let remainingTime = timeToClaim;
+
+    timers[faucetId] = setInterval(() => {
+        const hours = Math.floor(remainingTime / 3600);
+        const minutes = Math.floor((remainingTime % 3600) / 60);
+        const seconds = remainingTime % 60;
+
+        countdownElement.textContent = `${hours}:${minutes}:${seconds}`;
+
+        if (remainingTime <= 0) {
+            clearInterval(timers[faucetId]);
+            countdownElement.textContent = "";
+            claimButton.disabled = false;
+        } else {
+            remainingTime--;
+        }
+    }, 1000);
+}
 
 function claim(url) { }
