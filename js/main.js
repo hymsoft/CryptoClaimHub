@@ -78,4 +78,6 @@ function resetClaim(faucetId, timeToClaim) {
     }, 1000);
 }
 
-function claim(url) { }
+function claim(url) {
+    window.open(url, '_blank');
+}
